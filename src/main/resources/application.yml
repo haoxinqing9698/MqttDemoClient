@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: MqttDemoClient
+  profiles:
+    active: dev
+
+mqtt:
+  publisher:
+    brokers: tcp://localhost:1883
+    username: emqx
+    password: emqx1234
+  subscriber:
+    brokers: tcp://localhost:1883
+    username: emqx
+    password: emqx1234
+  # 客户端使用的topic，包含占位符，使用String.format(topic, clientId)替换
+  upload_msg_result_topic: test/%s/upload_msg_result
+  # 上报在线事件topic，客户端上线时上报
+  upload_online_msg_topic: test/%s/upload_online_msg
+  # 回复时间校准的topic，客户端收到时间校准数据后，将数据补充完整返回到下行topic
+  upload_time_diff_topic: test/%s/upload_time_diff
+  # 心跳数据topic
+  upload_heartbeat_topic: test/%s/upload_heartbeat_ping
+
+
+
+  # 订阅服务端的topic
+  # 所有客户端订阅时间校准topic，收到时间校准数据后，将数据补充完整返回到上行topic
+  push_time_diff_topic: test/push_time_diff
+  # 订阅服务端给本客户端推送的消息，中间的占位符用clientId替换
+  push_msg_topic: test/%s/push_msg
+  # 订阅服务端回复的pone消息
+  push_heartbeat_pong_topic: test/%s/push_heartbeat_pong
+
+
+# 多线程参数
+thread_pools:
+  # 时间校准消息处理器线程池
+  mqtt_message_handler_pool:
+    corePoolSize: 3
+    maxPoolSize: 10
+    queueCapacity: 25
+    threadNamePrefix: "mqtt-message-handler-"
+  # mqtt消息发布线程池
+  message_publisher_pool:
+    corePoolSize: 3
+    maxPoolSize: 10
+    queueCapacity: 25
+    threadNamePrefix: "message-publisher-"
+
